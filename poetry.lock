@@ -1,0 +1,31 @@
+[[package]]
+category = "main"
+description = "Radically simple IT automation"
+name = "ansible"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
+version = "2.10.6"
+
+[package.dependencies]
+ansible-base = ">=2.10.5,<2.11"
+
+[[package]]
+category = "main"
+description = "Radically simple IT automation"
+name = "ansible-base"
+optional = false
+python-versions = ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*,!=3.3.*,!=3.4.*"
+version = "2.10.5"
+
+[metadata]
+content-hash = "4d8950e267d53cebeaf05ed7a7fe74f1bde53ab26a9564584ab8995d58e13dea"
+lock-version = "1.0"
+python-versions = "^3.8"
+
+[metadata.files]
+ansible = [
+    {file = "ansible-2.10.6.tar.gz", hash = "sha256:ae97002e4fb1ed3de947428ff43906c76c66751fe104721cf6b25fa115dbbe8d"},
+]
+ansible-base = [
+    {file = "ansible-base-2.10.5.tar.gz", hash = "sha256:33ae323923b841f3d822f355380ce7c92610440362efeed67b4b39db41e555af"},
+]
