@@ -1,0 +1,9 @@
+{
+    "ANSIBLE_MODULE_ARGS": {
+        "database": "foo",
+        "username": "foouser",
+        "password": "foopass",
+        "hostname": "10.1.1.1",
+        "state": "present"
+    }
+}

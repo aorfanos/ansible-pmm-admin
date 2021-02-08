@@ -1,0 +1,65 @@
+---
+- hosts: all
+  tasks:
+     - name: download pmm-client
+       apt:
+         name: pmm2-client
+         state: present
+         update_cache: yes
+    - name: add pmm instance
+      pmm_admin:
+        database: "{{ item.database }}"
+        username: "{{ item.username }}"
+        password: "{{ item.password }}"
+        hostname: "{{ item.hostname }}"
+        service_name: "{{ item.service_name }}"
+        environment: staging
+        cluster: staging-cluster
+        port: "{{ item.port }}"
+        state: present
+      loop:
+        - {
+            database: "mysql",
+            username: "test",
+            password: "test",
+            hostname: "10.0.0.1",
+            service_name: "mysql-001",
+            port: 3306,
+          }
+        - {
+            database: "mysql",
+            username: "test",
+            password: "test",
+            hostname: "10.0.0.2",
+            service_name: "mysql-002",
+            port: 3306,
+          }
+        - {
+            database: "proxysql",
+            username: "VAULTME",
+            password: VAULTME,
+            hostname: "10.0.0.3",
+            service_name: proxysql-001,
+            port: 6032,
+          }
+        - {
+            database: "proxysql",
+            username: "VAULTME",
+            password: VAULTME,
+            hostname: "10.0.0.4",
+            service_name: proxysql-002,
+            port: 6032,
+          }
+        - {
+            database: "proxysql",
+            username: "VAULTME",
+            password: VAULTME,
+            hostname: "10.0.0.5",
+            service_name: proxysql-003,
+            port: 6032,
+          }
+    # - name: remove pmm instance
+    #   pmm_VAULTME:
+    #     database: "mysql"
+    #     service_name: "mysql-001"
+    #     state: absent
