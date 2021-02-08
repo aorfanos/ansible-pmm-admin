@@ -90,7 +90,6 @@ ANSIBLE_METADATA = {
 
 from ansible.module_utils.basic import AnsibleModule
 import subprocess
-import requests
 import json
 import urllib.request as urllib
 
@@ -111,8 +110,10 @@ def run_module():
         hostname=dict(type="str", required=True),
         username=dict(type="str", required=False, no_log=True),
         password=dict(type="str", required=False, no_log=True),
+        port=dict(type="int", required=False),
         environment=dict(type="str", required=False),
         tls=dict(type="bool", required=False, default=False),
+        register=dict(type="bool", required=False, default=False),
         state=dict(type="str", required=True),
     )
 
@@ -130,31 +131,21 @@ def run_module():
         cmd.append("--password='{}'".format(module.params["password"]))
     if module.params["hostname"] is not None:
         cmd.append("{}".format(module.params["hostname"]))
+    if module.params["port"] is not None:
+        cmd.append("--port={}".format(module.params["port"]))
     if module.params["environment"] is not None:
         cmd.append("--environment={}".format(module.params["environment"]))
     if module.params["tls"] is not None:
         cmd.append("--tls='{}'".format(module.params["tls"]))
 
-    result = dict(changed=False, stdout=cmd)
+    proc = subprocess.run(cmd, shell=True, check=True, capture_output=True)
 
-    # _database = input("Database type: ")
-    # _username = input("Add a username: ")
-    # _password = input("Add a password: ")
-    # _hostname = input("Add hostname: ")
-    # _optional = input("Add an optional arg: ")
+    if proc.returncode == 0:
+        _changed = True
+    else:
+        _changed = False
 
-    # cmd = [
-    #     "pmm-admin",
-    #     "add",
-    #     str(_database),
-    #     ]
-
-    # if _username is not None: cmd.append("--username='{}'".format(_username))
-    # if _password is not None: cmd.append("--password='{}'".format(_password))
-    # if _hostname is not None: cmd.append("--hostname='{}'".format(_hostname))
-    # if _optional is not None: cmd.append("--tls='{}'".format(_optional))
-
-    # print(cmd)
+    result = dict(changed=_changed, cmd=cmd, stdout=proc.stdout, stderr=proc.stderr)
 
     module.exit_json(**result)
 
