@@ -10,7 +10,7 @@ DOCUMENTATION = """
 ---
 module: pmm_admin
 
-short_description: Use pmm-admin to add DB instances to PMM2
+short_description: Use pmm-admin to add DB instances to PMM2. Does not autoconfigure (pmm-admin config)
 
 version_added: "2.9.10"
 
@@ -91,23 +91,32 @@ ANSIBLE_METADATA = {
 from ansible.module_utils.basic import AnsibleModule
 import subprocess
 import json
-import urllib.request as urllib
 
 
-def get_dashboard_by_name(dashboardName, grafanaApiUrl, authHeaders):
-    _url = "{}/api/search?query={}".format(
-        grafanaApiUrl, urllib.quote(dashboardName, safe="")
+def exists(operation, hostname="", service_name=""):
+    _list = subprocess.run(
+        "pmm-admin list", shell=True, check=True, capture_output=True
     )
-    result = requests.get(_url, headers=authHeaders).json()
-    for res in result:
-        return res["id"]
+    if operation == "present":
+        if hostname in str(_list.stdout):
+            return True
+        else:
+            return False
+    # reverse logic below, bc. when we want to remove
+    # we need the configuration to be present
+    elif operation == "absent":
+        if service_name in str(_list.stdout):
+            return False
+        else:
+            return True
 
 
 def run_module():
 
     module_args = dict(
         database=dict(type="str", required=True),
-        hostname=dict(type="str", required=True),
+        hostname=dict(type="str", required=False),
+        service_name=dict(type="str", required=True),
         username=dict(type="str", required=False, no_log=True),
         password=dict(type="str", required=False, no_log=True),
         port=dict(type="int", required=False),
@@ -119,26 +128,39 @@ def run_module():
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
 
+    if exists(
+        module.params["state"], module.params["hostname"], module.params["service_name"]
+    ):
+        result = dict(
+            changed=False,
+        )
+        module.exit_json(**result)
+    else:
+        pass
+
     cmd = [
         "pmm-admin",
-        "add",
         str(module.params["database"]),
     ]
 
-    if module.params["username"] is not None:
-        cmd.append("--username={}".format(module.params["username"]))
-    if module.params["password"] is not None:
-        cmd.append("--password={}".format(module.params["password"]))
-    if module.params["hostname"] is not None:
-        cmd.append("--host={}".format(module.params["hostname"]))
-    # if module.params["dsn"] is not None:
-    #     cmd.append('--server-url="{}"'.format(module.params["dsn"]))
-    if module.params["port"] is not None:
-        cmd.append("--port={}".format(module.params["port"]))
-    if module.params["environment"] is not None:
-        cmd.append("--environment={}".format(module.params["environment"]))
-    # if module.params["tls"] is not None:
-    #     cmd.append("--tls='{}'".format(module.params["tls"]))
+    if module.params["state"] == "present":
+        cmd.insert(1, "add")
+        if module.params["username"] is not None:
+            cmd.append("--username={}".format(module.params["username"]))
+        if module.params["password"] is not None:
+            cmd.append("--password={}".format(module.params["password"]))
+        if module.params["hostname"] is not None:
+            cmd.append("--host={}".format(module.params["hostname"]))
+        if module.params["port"] is not None:
+            cmd.append("--port={}".format(module.params["port"]))
+        if module.params["environment"] is not None:
+            cmd.append("--environment={}".format(module.params["environment"]))
+        if module.params["service_name"] is not None:
+            cmd.append("--service-name={}".format(module.params["service_name"]))
+    elif module.params["state"] == "absent":
+        cmd.insert(1, "remove")
+        if module.params["service_name"] is not None:
+            cmd.append("{}".format(module.params["service_name"]))
 
     proc = subprocess.run(" ".join(cmd), shell=True, check=True, capture_output=True)
 
@@ -147,7 +169,12 @@ def run_module():
     else:
         _changed = False
 
-    result = dict(changed=_changed, cmd=cmd, stdout=proc.stdout, stderr=proc.stderr)
+    result = dict(
+        changed=_changed,
+        cmd=cmd,
+        stdout_lines=proc.stdout,
+        stderr_lines=proc.stderr,
+    )
 
     module.exit_json(**result)
 
