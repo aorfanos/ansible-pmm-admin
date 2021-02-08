@@ -126,19 +126,21 @@ def run_module():
     ]
 
     if module.params["username"] is not None:
-        cmd.append("--username='{}'".format(module.params["username"]))
+        cmd.append("--username={}".format(module.params["username"]))
     if module.params["password"] is not None:
-        cmd.append("--password='{}'".format(module.params["password"]))
+        cmd.append("--password={}".format(module.params["password"]))
     if module.params["hostname"] is not None:
-        cmd.append("{}".format(module.params["hostname"]))
+        cmd.append("--host={}".format(module.params["hostname"]))
+    # if module.params["dsn"] is not None:
+    #     cmd.append('--server-url="{}"'.format(module.params["dsn"]))
     if module.params["port"] is not None:
         cmd.append("--port={}".format(module.params["port"]))
     if module.params["environment"] is not None:
         cmd.append("--environment={}".format(module.params["environment"]))
-    if module.params["tls"] is not None:
-        cmd.append("--tls='{}'".format(module.params["tls"]))
+    # if module.params["tls"] is not None:
+    #     cmd.append("--tls='{}'".format(module.params["tls"]))
 
-    proc = subprocess.run(cmd, shell=True, check=True, capture_output=True)
+    proc = subprocess.run(" ".join(cmd), shell=True, check=True, capture_output=True)
 
     if proc.returncode == 0:
         _changed = True
