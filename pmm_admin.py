@@ -3,7 +3,7 @@
 DOCUMENTATION = """
 ---
 module: pmm_admin
-short_description: Use pmm-admin to add DB instances to PMM2
+short_description: Use pmm-admin to add/remove DB instances to/from PMM2
 """
 
 DOCUMENTATION = """
@@ -117,10 +117,13 @@ def run_module():
         database=dict(type="str", required=True),
         hostname=dict(type="str", required=False),
         service_name=dict(type="str", required=True),
+        cluster=dict(type="str", required=False),
+        replication_set=dict(type="str", required=False),
         username=dict(type="str", required=False, no_log=True),
         password=dict(type="str", required=False, no_log=True),
         port=dict(type="int", required=False),
         environment=dict(type="str", required=False),
+        metrics_mode=dict(type="str", default="push", required=False),
         tls=dict(type="bool", required=False, default=False),
         register=dict(type="bool", required=False, default=False),
         state=dict(type="str", required=True),
@@ -157,6 +160,8 @@ def run_module():
             cmd.append("--environment={}".format(module.params["environment"]))
         if module.params["service_name"] is not None:
             cmd.append("--service-name={}".format(module.params["service_name"]))
+        if module.params["metrics_mode"] is not None:
+            cmd.append("--metrics-mode={}".format(module.params["metrics_mode"]))
     elif module.params["state"] == "absent":
         cmd.insert(1, "remove")
         if module.params["service_name"] is not None:
