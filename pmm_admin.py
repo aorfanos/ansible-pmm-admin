@@ -15,7 +15,7 @@ short_description: Use pmm-admin to add DB instances to PMM2. Does not autoconfi
 version_added: "2.9.10"
 
 description:
-    - "A module used to add/remove instances to a PMM2 instance"
+    - "A module used to add/remove instances to a PMM2 instance. PMM agent needs to be configured on the instance executing it."
 
 options:
     state:
@@ -38,6 +38,9 @@ options:
         description:
             - DB hostname
         required: false
+    service_name:
+        description:
+            - Service name to be displayed on PMM
     environment:
         description:
             -  Environment name
@@ -50,10 +53,15 @@ options:
         description:
             - Replication set
         required: false
-    tls:
+    port:
         description:
-            - Use TLS (true|false)
+            - Port to use
         required: false
+    metrics_mode:
+        description:
+            - Use either the "push" or "pull" metrics mode. Default is "push".
+        required: false
+
 
 
 author:
@@ -61,36 +69,55 @@ author:
 """
 
 EXAMPLES = """
-- name: Create a Grafana annotation
-  add_grafana_annotation:
-    grafana_api_url: "https://grafana.myproject.com"
-    grafana_api_key: "..."
-    dashboard_id: 468
-    panel_id: 20
-    text: "Annotation description"
-    tags:
-      - tag1
-      - tag2
-  register: result
+- name: Add a MySQL service to PMM2
+    pmm_admin:
+        database: "mysql"
+        username: "VAULTME"
+        password: "VAULTME"
+        hostname: "mysql-001.mydomain.com"
+        service_name: "mysql-001"
+        environment: staging
+        cluster: staging-cluster
+        port: 3306
+        state: present
+
+- name: Add a ProxySQL service to PMM2
+    pmm_admin:
+        database: "proxysql"
+        username: "VAULTME"
+        password: "VAULTME"
+        hostname: "proxysql-001.mydomain.com"
+        service_name: "proxysql-001"
+        environment: production
+        cluster: main-cluster
+        port: 6032
+        state: present
+
+- name: remove a PMM service
+    pmm_admin:
+        database: "proxysql"
+        service_name: "proxysql-001"
+        state: absent
 """
 
 RETURN = """
-remote_status_code:
-    description: The HTTP return code of the RESTFul call to Grafana API
-    type: int
-message:
-    description: An auxiliary message, containing the return code and (very) basic troubleshooting info
+cmd:
+    description: List of the command components
+    type: str
+stdout_lines:
+    description: STDOUT of the executed command
+stderr_lines:
+    description: STDERR of the executed command
 """
 
 ANSIBLE_METADATA = {
     "status": ["preview"],
     "supported_by": "community",
-    "metadata_version": "1.0",
+    "metadata_version": "0.1",
 }
 
 from ansible.module_utils.basic import AnsibleModule
 import subprocess
-import json
 
 
 def exists(operation, hostname="", service_name=""):
