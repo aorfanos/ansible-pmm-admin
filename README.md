@@ -19,6 +19,7 @@ Requirements:
         environment: staging
         cluster: staging-cluster
         port: 3306
+        metrics_mode: push
         state: present
 
 - name: Add a ProxySQL service to PMM2
@@ -31,6 +32,7 @@ Requirements:
         environment: production
         cluster: main-cluster
         port: 6032
+        metrics_mode: pull
         state: present
 
 - name: remove a PMM service
