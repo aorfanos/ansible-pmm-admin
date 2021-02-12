@@ -1,4 +1,4 @@
-# ansible-pmm-admin
+# community.aorfanos.module_pmm_admin
 
 An Ansible module to add or remove services in [Percona Monitoring and Management 2](https://www.percona.com/doc/percona-monitoring-and-management/2.x/index.html).
 
@@ -11,13 +11,13 @@ Requirements:
 | Parameter    | Required | Choices/Defaults                                           | Comments                                                   |
 |--------------|----------|------------------------------------------------------------|------------------------------------------------------------|
 | cluster      | False    |                            None                            | Cluster name for the service                               |
-| database     | True     | Choices:   - mysql   - proxysql   - mongodb   - postgresql | Database type                                              |
+| database     | True     | Choices:   <ul><li>mysql</li><li>proxysql</li><li>mongodb</li><li>postgresql</li></ul> | Database type                                              |
 | environment  | False    | None                                                       | Service environment (e.g. staging)                         |
-| state        | True     | Choices:   - present (default)   - absent                  |                                                            |
+| state        | True     | Choices:   <ul><li>present (default)</li><li>absent</li></ul>                 |                                                            |
 | hostname     | False    | IP or FQDN for the monitored host                          | Is required to add a service, not required for removing it |
 | username     | False    | None                                                       |                                                            |
 | password     | False    | None                                                       |                                                            |
-| metrics_mode | False    | Choices:   - push (default)   - pull                       | Metrics mode as mentioned in documentation.                |
+| metrics_mode | False    | Choices: <ul><li>push (default)</li><li>pull</li></ul>                       | Metrics mode as mentioned in documentation.                |
 | port         | False    | None                                                       |                                                            |
 | service_name | True     | None                                                       | Name to use for the monitoring service                     |
 
