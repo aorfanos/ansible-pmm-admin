@@ -6,6 +6,21 @@ Requirements:
 
 - `pmm-admin` on the host that will be executing the task
 
+## Parameters
+
+| Parameter    | Required | Choices/Defaults                                           | Comments                                                   |
+|--------------|----------|------------------------------------------------------------|------------------------------------------------------------|
+| cluster      | False    |                            None                            | Cluster name for the service                               |
+| database     | True     | Choices:   - mysql   - proxysql   - mongodb   - postgresql | Database type                                              |
+| environment  | False    | None                                                       | Service environment (e.g. staging)                         |
+| state        | True     | Choices:   - present (default)   - absent                  |                                                            |
+| hostname     | False    | IP or FQDN for the monitored host                          | Is required to add a service, not required for removing it |
+| username     | False    | None                                                       |                                                            |
+| password     | False    | None                                                       |                                                            |
+| metrics_mode | False    | Choices:   - push (default)   - pull                       | Metrics mode as mentioned in documentation.                |
+| port         | False    | None                                                       |                                                            |
+| service_name | True     | None                                                       | Name to use for the monitoring service                     |
+
 ## Usage/examples
 
 ```yaml
