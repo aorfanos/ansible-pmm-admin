@@ -1,4 +1,4 @@
-# community.aorfanos.module_pmm_admin
+# community.aorfanos.pmm_admin
 
 An Ansible module to add or remove services in [Percona Monitoring and Management 2](https://www.percona.com/doc/percona-monitoring-and-management/2.x/index.html).
 
