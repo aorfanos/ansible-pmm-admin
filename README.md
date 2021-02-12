@@ -2,9 +2,13 @@
 
 An Ansible module to add or remove services in [Percona Monitoring and Management 2](https://www.percona.com/doc/percona-monitoring-and-management/2.x/index.html).
 
-Requirements:
+## Installation
 
-- `pmm-admin` on the host that will be executing the task
+`ansible-galaxy collection install aorfanos.module_pmm_admin`
+
+## Requirements
+
+- `pmm-admin` executable and in `$PATH` on the host that will be executing the task
 
 ## Parameters
 
@@ -25,7 +29,7 @@ Requirements:
 
 ```yaml
 - name: Add a MySQL service to PMM2
-    pmm_admin:
+    community.aorfanos.module_pmm_admin:
         database: "mysql"
         username: "VAULTME"
         password: "VAULTME"
@@ -38,7 +42,7 @@ Requirements:
         state: present
 
 - name: Add a ProxySQL service to PMM2
-    pmm_admin:
+    community.aorfanos.module_pmm_admin:
         database: "proxysql"
         username: "VAULTME"
         password: "VAULTME"
@@ -51,7 +55,7 @@ Requirements:
         state: present
 
 - name: remove a PMM service
-    pmm_admin:
+    community.aorfanos.module_pmm_admin:
         database: "proxysql"
         service_name: "proxysql-001"
         state: absent
