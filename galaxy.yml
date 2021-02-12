@@ -1,6 +1,6 @@
 namespace: "aorfanos"
-name: "module-pmm-admin"
-version: "1.0.0"
+name: "module_pmm_admin"
+version: 1.0.0-beta1
 readme: "README.md"
 authors:
   - "Alexandros Orfanos <me@aorfanos.com>"
@@ -13,4 +13,4 @@ repository: "https://github.com/aorfanos/ansible-pmm-admin"
 issues: "https://github.com/aorfanos/ansible-pmm-admin/issues"
 build_ignore:
   - examples/*
-  - *.lock
+  - poetry*
