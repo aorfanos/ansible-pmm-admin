@@ -118,22 +118,29 @@ ANSIBLE_METADATA = {
 
 from ansible.module_utils.basic import AnsibleModule
 import subprocess
+import json
 
 
 def exists(operation, hostname="", service_name=""):
     _list = subprocess.run(
-        "pmm-admin list", shell=True, check=True, capture_output=True
+        "pmm-admin list --json", shell=True, check=True, capture_output=True
     )
+    _listJSON = json.loads(_list.stdout)
     if operation == "present":
-        if hostname in str(_list.stdout):
-            return True
-        else:
-            return False
+        for service in _listJSON["service"]:
+            if (
+                hostname in service["address_port"]
+                and service_name in service["service_name"]
+            ):
+                return True
+            else:
+                continue
     # reverse logic below, bc. when we want to remove
     # we need the configuration to be present
     elif operation == "absent":
-        if service_name in str(_list.stdout):
-            return False
+        for service in _listJSON["service"]:
+            if service_name == service["service_name"]:
+                return False
         else:
             return True
 
@@ -167,6 +174,21 @@ def run_module():
         module.exit_json(**result)
     else:
         pass
+
+    if module.check_mode:
+        if exists(
+            module.params["state"],
+            module.params["hostname"],
+            module.params["service_name"],
+        ):
+            result = dict(
+                changed=False,
+            )
+        else:
+            result = dict(
+                changed=True,
+            )
+        module.exit_json(**result)
 
     cmd = [
         "pmm-admin",
