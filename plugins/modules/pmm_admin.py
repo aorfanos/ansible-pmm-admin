@@ -2,13 +2,13 @@
 
 DOCUMENTATION = """
 ---
-module: pmm_admin
+module: community.aorfanos.module_pmm_admin
 short_description: Use pmm-admin to add/remove DB instances to/from PMM2
 """
 
 DOCUMENTATION = """
 ---
-module: pmm_admin
+module: community.aorfanos.module_pmm_admin
 
 short_description: Use pmm-admin to add DB instances to PMM2. Does not autoconfigure (pmm-admin config)
 
@@ -159,8 +159,7 @@ def run_module():
         environment=dict(type="str", required=False),
         metrics_mode=dict(type="str", default="push", required=False),
         tls=dict(type="bool", required=False, default=False),
-        register=dict(type="bool", required=False, default=False),
-        state=dict(type="str", required=True),
+        state=dict(type="str", required=True, default="present"),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
