@@ -1,6 +1,6 @@
 namespace: "aorfanos"
 name: "pmm_admin"
-version: 1.0.0-beta1
+version: 1.0.1-beta1
 readme: "README.md"
 authors:
   - "Alexandros Orfanos <me@aorfanos.com>"

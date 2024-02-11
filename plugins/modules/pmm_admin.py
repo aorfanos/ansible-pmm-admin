@@ -159,7 +159,7 @@ def run_module():
         environment=dict(type="str", required=False),
         metrics_mode=dict(type="str", default="push", required=False),
         tls=dict(type="bool", required=False, default=False),
-        state=dict(type="str", required=True, default="present"),
+        state=dict(type="str", required=False, default="present"),
     )
 
     module = AnsibleModule(argument_spec=module_args, supports_check_mode=True)
