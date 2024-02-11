@@ -15,6 +15,6 @@ jobs:
           fetch-depth: 1
 
       - name: Build and Deploy Collection
-        uses: artis3n/ansible_galaxy_collection@v2
+        uses: artis3n/ansible_galaxy_collection@v2.10.1
         with:
           api_key: "${{ secrets.GALAXY_API_KEY }}"
